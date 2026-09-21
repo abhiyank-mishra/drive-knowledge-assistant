@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { ChatMessage, DocumentItem } from "@/types";
-import { Send, Bot, User, Sparkles, Trash2, ArrowDown } from "lucide-react";
+import { Send, Bot, User, Sparkles, Trash2, ArrowDown, ExternalLink } from "lucide-react";
 
 interface AgentChatDrawerProps {
   activeDoc: DocumentItem | null;
@@ -109,13 +109,26 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
           </div>
         </div>
 
-        <button
-          onClick={() => setMessages([messages[0]])}
-          title="Clear Conversation"
-          className="p-1.5 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-800 transition-colors"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <a
+            href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 text-xs font-semibold transition-colors"
+            title="Open Vertex Cloud Session (ID: 9268429337751159874)"
+          >
+            <span>Vertex Cloud Agent</span>
+            <ExternalLink className="w-3 h-3 ml-0.5" />
+          </a>
+
+          <button
+            onClick={() => setMessages([messages[0]])}
+            title="Clear Conversation"
+            className="p-1.5 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-800 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Messages Container */}

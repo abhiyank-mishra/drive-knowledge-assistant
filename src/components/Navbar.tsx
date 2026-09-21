@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Sparkles, Clock, Settings, HardDrive, Newspaper, MessageSquareCode, Github, RefreshCw } from "lucide-react";
+import { Sparkles, Clock, Settings, HardDrive, Newspaper, MessageSquareCode, Github, RefreshCw, ExternalLink } from "lucide-react";
 
 interface NavbarProps {
   activeTab: "news" | "drive" | "chat";
@@ -116,6 +116,19 @@ export default function Navbar({
                 <RefreshCw className={`w-3 h-3 ${isRefreshingNews ? "animate-spin text-blue-400" : ""}`} />
               </button>
             </div>
+
+            {/* Live Vertex Enterprise Session Button */}
+            <a
+              href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-500/30 transition-all shadow-sm"
+              title="Open Google Enterprise Agent Workspace"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span className="hidden md:inline">Live Enterprise Agent</span>
+              <ExternalLink className="w-3 h-3 ml-0.5" />
+            </a>
 
             {/* API Settings Trigger */}
             <button
