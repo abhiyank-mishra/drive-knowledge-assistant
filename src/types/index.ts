@@ -1,13 +1,20 @@
+export type NewsCategory = "All" | "AI & ML" | "Software" | "Startups" | "Open Source" | "Cybersecurity" | string;
+
 export interface NewsItem {
   id: string;
   title: string;
-  category: "AI & ML" | "Tech & Dev" | "Open Source" | "Cybersecurity" | "Campus";
+  category: "AI & ML" | "Software" | "Startups" | "Open Source" | "Cybersecurity" | string;
   summary: string;
-  keyPoints: string[];
+  keyPoints?: string[];
   source: string;
+  domain?: string;
   url?: string;
   publishedAt: string;
-  sentiment: "positive" | "neutral" | "urgent";
+  isoTimestamp?: string;
+  score?: number;
+  commentsCount?: number;
+  author?: string;
+  sentiment?: "positive" | "neutral" | "urgent";
 }
 
 export interface DocumentItem {

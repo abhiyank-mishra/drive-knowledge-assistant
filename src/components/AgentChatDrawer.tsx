@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { ChatMessage, DocumentItem } from "@/types";
-import { Send, Bot, User, Sparkles, Trash2, ArrowDown, ExternalLink } from "lucide-react";
+import { Send, Bot, User, Sparkles, Trash2, ArrowRight } from "lucide-react";
 
 interface AgentChatDrawerProps {
   activeDoc: DocumentItem | null;
@@ -14,7 +14,7 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
     {
       id: "msg-1",
       sender: "assistant",
-      text: "Namaste! Main aapka **DriveMind Gemini Agent** hoon. Main aapke Google Drive notes, exam formulas aur hourly tech news sab janta hoon. Kuch bhi doubt ho, Hindi ya English me poochiye!",
+      text: "Hello! I am your AI Copilot. I can analyze your uploaded Drive notes, explain complex exam topics, or discuss live tech developments. What would you like to explore?",
       timestamp: "Just now",
     },
   ]);
@@ -31,10 +31,10 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
   }, [messages, loading]);
 
   const quickPrompts = [
-    activeDoc ? `Summarize ${activeDoc.subject} in 3 bullet points` : "What is the top AI news this hour?",
-    "Explain the hardest concept in simple Hindi",
+    activeDoc ? `Summarize ${activeDoc.subject} in 3 bullet points` : "What are the latest AI breakthroughs?",
+    "Explain the hardest concept in simple terms",
     "List 3 high-probability exam questions",
-    "How do I prepare for upcoming semester exams?",
+    "Give me quick formula sheet recap",
   ];
 
   const handleSend = async (userText: string) => {
@@ -81,7 +81,7 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
       const errorMsg: ChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: "assistant",
-        text: `Error: ${err.message || "Something went wrong."} (Check your Gemini API key in Settings).`,
+        text: `Notice: ${err.message || "Something went wrong."} (Tip: You can configure your Gemini API Key in Settings for direct AI answers).`,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
       setMessages((prev) => [...prev, errorMsg]);
@@ -91,44 +91,31 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
   };
 
   return (
-    <div className="glass-panel rounded-2xl border border-slate-800 flex flex-col h-[650px] overflow-hidden">
-      {/* Chat Header */}
-      <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/40">
+    <div className="rounded-2xl bg-[#111115] border border-white/[0.08] flex flex-col h-[640px] overflow-hidden shadow-sm">
+      {/* Sleek Copilot Header */}
+      <div className="px-5 py-3.5 border-b border-white/[0.06] flex items-center justify-between bg-zinc-950/40">
         <div className="flex items-center space-x-3">
-          <div className="h-9 w-9 rounded-xl bg-blue-600/20 border border-blue-500/30 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-blue-400" />
+          <div className="h-8 w-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center">
+            <Bot className="w-4 h-4 text-indigo-400" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-white flex items-center space-x-2">
-              <span>Gemini Enterprise Agent Copilot</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <h2 className="text-xs sm:text-sm font-semibold text-white flex items-center space-x-2">
+              <span>AI Copilot</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             </h2>
-            <p className="text-[11px] text-slate-400">
-              {activeDoc ? `Grounded in: ${activeDoc.title}` : "Grounded in Campus & Tech Knowledge"}
+            <p className="text-[11px] text-zinc-400">
+              {activeDoc ? `Context: ${activeDoc.title}` : "Context: Live Tech & Knowledge Hub"}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <a
-            href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 text-xs font-semibold transition-colors"
-            title="Open Vertex Cloud Session (ID: 9268429337751159874)"
-          >
-            <span>Vertex Cloud Agent</span>
-            <ExternalLink className="w-3 h-3 ml-0.5" />
-          </a>
-
-          <button
-            onClick={() => setMessages([messages[0]])}
-            title="Clear Conversation"
-            className="p-1.5 text-slate-500 hover:text-slate-300 rounded-lg hover:bg-slate-800 transition-colors"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
+        <button
+          onClick={() => setMessages([messages[0]])}
+          title="Clear Conversation"
+          className="p-1.5 text-zinc-500 hover:text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Messages Container */}
@@ -143,24 +130,24 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
             <div
               className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 ${
                 msg.sender === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800 text-cyan-400 border border-slate-700"
+                  ? "bg-zinc-700 text-white"
+                  : "bg-zinc-900 text-indigo-400 border border-white/[0.08]"
               }`}
             >
-              {msg.sender === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+              {msg.sender === "user" ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
             </div>
 
             <div
               className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
                 msg.sender === "user"
-                  ? "bg-blue-600 text-white rounded-tr-none shadow-md shadow-blue-600/20"
-                  : "bg-slate-900 border border-slate-800 text-slate-200 rounded-tl-none whitespace-pre-wrap"
+                  ? "bg-zinc-800 text-white rounded-tr-none border border-white/[0.08]"
+                  : "bg-zinc-900/90 border border-white/[0.06] text-zinc-200 rounded-tl-none whitespace-pre-wrap"
               }`}
             >
               {msg.text}
               <span
                 className={`block text-[9px] mt-1.5 font-mono ${
-                  msg.sender === "user" ? "text-blue-200 text-right" : "text-slate-500"
+                  msg.sender === "user" ? "text-zinc-400 text-right" : "text-zinc-500"
                 }`}
               >
                 {msg.timestamp}
@@ -170,25 +157,26 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
         ))}
 
         {loading && (
-          <div className="flex items-center space-x-2 text-slate-400 text-xs pl-9">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400 animate-spin" />
-            <span>Agent is thinking & synthesizing...</span>
+          <div className="flex items-center space-x-2 text-zinc-400 text-xs pl-9">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-spin" />
+            <span>Copilot is reasoning and formulating response...</span>
           </div>
         )}
 
         <div ref={chatEndRef} />
       </div>
 
-      {/* Quick Prompts */}
-      <div className="px-4 py-2 border-t border-slate-800/80 bg-slate-950/20">
+      {/* Prompt Suggestions */}
+      <div className="px-4 py-2 border-t border-white/[0.04] bg-zinc-950/40">
         <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
           {quickPrompts.map((prompt, idx) => (
             <button
               key={idx}
               onClick={() => handleSend(prompt)}
-              className="text-[11px] px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800 whitespace-nowrap transition-colors"
+              className="text-[11px] px-2.5 py-1 rounded-full bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 border border-white/[0.06] whitespace-nowrap transition-colors flex items-center space-x-1"
             >
-              {prompt}
+              <span>{prompt}</span>
+              <ArrowRight className="w-2.5 h-2.5 text-zinc-600" />
             </button>
           ))}
         </div>
@@ -200,7 +188,7 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
           e.preventDefault();
           handleSend(input);
         }}
-        className="p-3 bg-slate-950/70 border-t border-slate-800 flex items-center space-x-2"
+        className="p-3 bg-zinc-950/60 border-t border-white/[0.06] flex items-center space-x-2"
       >
         <input
           type="text"
@@ -208,18 +196,18 @@ export default function AgentChatDrawer({ activeDoc, apiKey }: AgentChatDrawerPr
           onChange={(e) => setInput(e.target.value)}
           placeholder={
             activeDoc
-              ? `Ask anything about ${activeDoc.subject} (Hindi or English)...`
-              : "Ask the agent anything..."
+              ? `Ask anything about ${activeDoc.subject}...`
+              : "Ask AI Copilot anything..."
           }
-          className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
+          className="flex-1 bg-zinc-900 border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
         />
 
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="p-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white shadow-md shadow-blue-600/25 transition-all"
+          className="p-2.5 rounded-xl bg-white text-zinc-950 hover:bg-zinc-200 disabled:opacity-30 disabled:hover:bg-white font-medium transition-colors"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-3.5 h-3.5" />
         </button>
       </form>
     </div>

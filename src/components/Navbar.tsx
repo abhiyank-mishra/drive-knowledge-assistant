@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Sparkles, Clock, Settings, HardDrive, Newspaper, MessageSquareCode, Github, RefreshCw, ExternalLink } from "lucide-react";
+import React from "react";
+import { Newspaper, HardDrive, Bot, RefreshCw, Settings, Github, Radio } from "lucide-react";
 
 interface NavbarProps {
   activeTab: "news" | "drive" | "chat";
   setActiveTab: (tab: "news" | "drive" | "chat") => void;
-  nextUpdateMinutes: number;
+  lastUpdatedText: string;
   isRefreshingNews: boolean;
   onRefreshNews: () => void;
   onOpenSettings: () => void;
@@ -16,142 +16,121 @@ interface NavbarProps {
 export default function Navbar({
   activeTab,
   setActiveTab,
-  nextUpdateMinutes,
+  lastUpdatedText,
   isRefreshingNews,
   onRefreshNews,
   onOpenSettings,
   hasApiKey,
 }: NavbarProps) {
-  const [time, setTime] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      setTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <header className="sticky top-0 z-40 border-b border-slate-800/80 glass-panel bg-slate-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#0a0a0c]/80 backdrop-blur-xl transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Brand / Logo */}
+        <div className="flex items-center justify-between h-14">
+          {/* Brand Logo with Pulsing Live Dot */}
           <div className="flex items-center space-x-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-[2px] shadow-lg shadow-blue-500/20">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-cyan-400 animate-pulse" />
+            <div className="flex items-center space-x-2.5 group cursor-pointer" onClick={() => setActiveTab("news")}>
+              <div className="relative flex items-center justify-center w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-100 shadow-sm group-hover:border-zinc-700 transition-colors">
+                <span className="font-bold text-sm tracking-tight bg-gradient-to-br from-white to-zinc-400 bg-clip-text text-transparent">
+                  DM
+                </span>
+                {/* Live pulsing dot */}
+                <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
               </div>
-            </div>
-            <div>
+
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                  DriveMind<span className="text-blue-400">.AI</span>
+                <span className="font-semibold text-sm tracking-tight text-white">
+                  DriveMind
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                  Gemini Enterprise
+                <span className="hidden sm:inline-flex items-center text-[10px] font-medium tracking-wide uppercase px-2 py-0.5 rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800">
+                  Live
                 </span>
               </div>
-              <p className="text-xs text-slate-400 hidden sm:block">
-                Autonomous Drive Knowledge & Hourly Agent Hub
-              </p>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <nav className="flex items-center space-x-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800">
+          {/* 3 Clean Pill Tabs in Minimal Segmented Control */}
+          <nav className="flex items-center p-1 rounded-full bg-zinc-900/90 border border-white/[0.08] shadow-inner">
             <button
               onClick={() => setActiveTab("news")}
-              className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "news"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "bg-zinc-800 text-white shadow-sm border border-white/[0.1]"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
               }`}
             >
-              <Newspaper className="w-4 h-4" />
-              <span>Hourly News</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <Radio className={`w-3.5 h-3.5 ${activeTab === "news" ? "text-emerald-400" : "text-zinc-500"}`} />
+              <span className="whitespace-nowrap">Live Tech Feed</span>
             </button>
 
             <button
               onClick={() => setActiveTab("drive")}
-              className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "drive"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "bg-zinc-800 text-white shadow-sm border border-white/[0.1]"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
               }`}
             >
-              <HardDrive className="w-4 h-4" />
-              <span>Drive Notes</span>
+              <HardDrive className={`w-3.5 h-3.5 ${activeTab === "drive" ? "text-blue-400" : "text-zinc-500"}`} />
+              <span className="whitespace-nowrap">Drive Notes</span>
             </button>
 
             <button
               onClick={() => setActiveTab("chat")}
-              className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${
+              className={`flex items-center space-x-2 px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
                 activeTab === "chat"
-                  ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                  : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
+                  ? "bg-zinc-800 text-white shadow-sm border border-white/[0.1]"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40"
               }`}
             >
-              <MessageSquareCode className="w-4 h-4" />
-              <span>Agent Copilot</span>
+              <Bot className={`w-3.5 h-3.5 ${activeTab === "chat" ? "text-indigo-400" : "text-zinc-500"}`} />
+              <span className="whitespace-nowrap">AI Copilot</span>
             </button>
           </nav>
 
-          {/* Controls & Status */}
-          <div className="flex items-center space-x-3">
-            {/* Live Clock & Auto-sync badge */}
-            <div className="hidden md:flex items-center space-x-2 px-3 py-1 rounded-lg bg-slate-900/60 border border-slate-800 text-xs text-slate-300">
-              <Clock className="w-3.5 h-3.5 text-blue-400" />
-              <span>{time}</span>
-              <span className="text-slate-600">|</span>
-              <span className="text-slate-400">Next sync in {nextUpdateMinutes}m</span>
-              <button
-                onClick={onRefreshNews}
-                disabled={isRefreshingNews}
-                title="Force refresh news now"
-                className="p-1 hover:text-blue-400 transition-colors"
-              >
-                <RefreshCw className={`w-3 h-3 ${isRefreshingNews ? "animate-spin text-blue-400" : ""}`} />
-              </button>
+          {/* Right Utilities: Last Updated Pill + Refresh Button + Settings + GitHub */}
+          <div className="flex items-center space-x-2">
+            {/* Last Updated Pill */}
+            <div className="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-zinc-900/90 border border-white/[0.06] text-[11px] text-zinc-400 font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>{lastUpdatedText}</span>
             </div>
 
-            {/* Live Vertex Enterprise Session Button */}
-            <a
-              href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 text-cyan-300 hover:border-cyan-400 hover:bg-cyan-500/30 transition-all shadow-sm"
-              title="Open Google Enterprise Agent Workspace"
+            {/* Clean Refresh Button */}
+            <button
+              onClick={onRefreshNews}
+              disabled={isRefreshingNews}
+              title="Refresh live tech news now"
+              className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-zinc-900/80 hover:bg-zinc-800 border border-white/[0.08] text-xs text-zinc-300 hover:text-white transition-colors disabled:opacity-50"
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span className="hidden md:inline">Live Enterprise Agent</span>
-              <ExternalLink className="w-3 h-3 ml-0.5" />
-            </a>
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshingNews ? "animate-spin text-emerald-400" : ""}`} />
+              <span className="hidden sm:inline text-[11px] font-medium">Refresh</span>
+            </button>
 
-            {/* API Settings Trigger */}
+            {/* API Settings */}
             <button
               onClick={onOpenSettings}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+              title="Settings & API Key"
+              className={`p-1.5 rounded-lg border text-xs transition-colors ${
                 hasApiKey
-                  ? "bg-slate-900 text-emerald-400 border-emerald-500/30 hover:border-emerald-500/60"
-                  : "bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20"
+                  ? "bg-zinc-900 text-emerald-400 border-emerald-500/30 hover:border-emerald-500/60"
+                  : "bg-zinc-900 text-zinc-400 border-white/[0.08] hover:text-white hover:border-zinc-700"
               }`}
             >
               <Settings className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{hasApiKey ? "Connected" : "Set API Key"}</span>
             </button>
 
-            {/* GitHub Repo Button */}
+            {/* GitHub Link */}
             <a
-              href="https://github.com"
+              href="https://github.com/abhiyank-mishra/drive-knowledge-assistant"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/80 transition-colors"
               title="View on GitHub"
+              className="p-1.5 rounded-lg bg-zinc-900 border border-white/[0.08] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
             >
-              <Github className="w-4 h-4" />
+              <Github className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>

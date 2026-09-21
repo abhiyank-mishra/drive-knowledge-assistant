@@ -15,9 +15,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<"news" | "drive" | "chat">("news");
   const [news, setNews] = useState<NewsItem[]>(INITIAL_NEWS);
   const [isRefreshingNews, setIsRefreshingNews] = useState(false);
-  const [nextUpdateMinutes, setNextUpdateMinutes] = useState(60);
-  const [newsUpdatedAt, setNewsUpdatedAt] = useState("Current Hour");
-  const [newsSource, setNewsSource] = useState("Agent Initial Feed");
+  const [newsUpdatedAt, setNewsUpdatedAt] = useState("Just now");
+  const [lastFetchTimestamp, setLastFetchTimestamp] = useState(Date.now());
+  const [newsSource, setNewsSource] = useState("Live Hacker News & Dev.to");
+  const [nextSyncSeconds, setNextSyncSeconds] = useState(3600); // 60 minutes = 3600 seconds
+  const [lastUpdatedText, setLastUpdatedText] = useState("Updated just now");
 
   // Documents State
   const [documents, setDocuments] = useState<DocumentItem[]>(SAMPLE_DOCUMENTS);
@@ -50,7 +52,24 @@ export default function Home() {
     }
   }, []);
 
-  // Fetch Hourly News on mount and set interval for auto-refresh
+  // Compute live relative "Updated Xm ago" string for the navbar
+  useEffect(() => {
+    const updateRelativePill = () => {
+      const diffMs = Date.now() - lastFetchTimestamp;
+      const diffMin = Math.floor(diffMs / 60000);
+      if (diffMin < 1) {
+        setLastUpdatedText("Updated just now");
+      } else {
+        setLastUpdatedText(`Updated ${diffMin}m ago`);
+      }
+    };
+
+    updateRelativePill();
+    const pillTimer = setInterval(updateRelativePill, 30000);
+    return () => clearInterval(pillTimer);
+  }, [lastFetchTimestamp]);
+
+  // Fetch real live news
   const fetchHourlyNews = async (forceRefresh = false) => {
     setIsRefreshingNews(true);
     try {
@@ -62,8 +81,9 @@ export default function Home() {
       if (data.success && Array.isArray(data.news)) {
         setNews(data.news);
         setNewsUpdatedAt(data.updatedAt);
-        setNextUpdateMinutes(data.nextUpdateInMinutes || 60);
-        setNewsSource(data.source === "gemini-live-agent" ? "Gemini Enterprise Live" : "Local Agent");
+        setLastFetchTimestamp(Date.now());
+        setNewsSource(data.source || "Live Hacker News & Dev.to");
+        setNextSyncSeconds(3600);
       }
     } catch (err) {
       console.error("Hourly news fetch error:", err);
@@ -72,21 +92,21 @@ export default function Home() {
     }
   };
 
+  // Initial fetch and 1-second ticking countdown timer
   useEffect(() => {
     fetchHourlyNews();
 
-    // Countdown interval every 60 seconds
-    const countdownTimer = setInterval(() => {
-      setNextUpdateMinutes((prev) => {
+    const timer = setInterval(() => {
+      setNextSyncSeconds((prev) => {
         if (prev <= 1) {
           fetchHourlyNews(true);
-          return 60;
+          return 3600;
         }
         return prev - 1;
       });
-    }, 60000);
+    }, 1000);
 
-    return () => clearInterval(countdownTimer);
+    return () => clearInterval(timer);
   }, [apiKey]);
 
   const handleSaveApiKey = (key: string) => {
@@ -103,7 +123,6 @@ export default function Home() {
     if (typeof window !== "undefined") {
       localStorage.setItem("drivemind_documents", JSON.stringify(updated));
     }
-    // Auto-generate summary for new doc
     handleSummarize(newDoc);
   };
 
@@ -138,55 +157,23 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#070b14] text-slate-100 selection:bg-blue-600 selection:text-white">
-      {/* Background radial glowing effects */}
+    <div className="min-h-screen flex flex-col bg-[#0a0a0c] text-zinc-100 selection:bg-zinc-800 selection:text-white">
+      {/* Subtle ambient gradient mesh in background */}
       <div className="fixed inset-0 pointer-events-none gradient-glow z-0" />
 
-      {/* Navbar */}
+      {/* Crystal Clear Minimalist Navbar */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        nextUpdateMinutes={nextUpdateMinutes}
+        lastUpdatedText={lastUpdatedText}
         isRefreshingNews={isRefreshingNews}
         onRefreshNews={() => fetchHourlyNews(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
         hasApiKey={!!apiKey}
       />
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10 space-y-6">
-        {/* Live Enterprise Agent Status Banner */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl glass-panel border border-emerald-500/30 bg-emerald-950/10">
-          <div className="flex items-center space-x-3">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping" />
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
-                  Vertex AI Agent Connected
-                </span>
-                <span className="text-xs text-slate-500">•</span>
-                <span className="text-xs font-semibold text-white">DriveMind</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
-                  ID: 9268429337751159874
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400">
-                Grounding Active: Google Drive College Notes & GLA University Gmail
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold transition-all shadow-sm shrink-0"
-          >
-            <span>Open Google Cloud Session</span>
-            <span className="text-emerald-400">↗</span>
-          </a>
-        </div>
-
+      {/* Main App Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
         {activeTab === "news" && (
           <HourlyNewsFeed
             news={news}
@@ -194,6 +181,7 @@ export default function Home() {
             onRefresh={() => fetchHourlyNews(true)}
             updatedAt={newsUpdatedAt}
             source={newsSource}
+            nextSyncSeconds={nextSyncSeconds}
           />
         )}
 
@@ -215,14 +203,14 @@ export default function Home() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 py-6 text-center text-xs text-slate-500 relative z-10">
+      {/* Clean Minimalist Footer */}
+      <footer className="border-t border-white/[0.06] py-5 text-center text-xs text-zinc-500 relative z-10">
         <p>
-          DriveMind AI • Powered by Google Gemini Enterprise & Google Cloud Vertex Agents • Built for Next.js & Vercel
+          DriveMind • Real-time Live Tech & AI News Feed • Connected to Hacker News & Dev.to APIs
         </p>
       </footer>
 
-      {/* Modals */}
+      {/* Clean Modals */}
       <AddDriveModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
