@@ -154,7 +154,39 @@ export default function Home() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10 space-y-6">
+        {/* Live Enterprise Agent Status Banner */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl glass-panel border border-emerald-500/30 bg-emerald-950/10">
+          <div className="flex items-center space-x-3">
+            <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-400 animate-ping" />
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide">
+                  Vertex AI Agent Connected
+                </span>
+                <span className="text-xs text-slate-500">•</span>
+                <span className="text-xs font-semibold text-white">DriveMind</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                  ID: 9268429337751159874
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400">
+                Grounding Active: Google Drive College Notes & GLA University Gmail
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="https://vertexaisearch.cloud.google.com/home/cid/167338f8-6657-45e2-b5d2-48ef44228600/r/agent/9268429337751159874/session/-?hl=en_US"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-semibold transition-all shadow-sm shrink-0"
+          >
+            <span>Open Google Cloud Session</span>
+            <span className="text-emerald-400">↗</span>
+          </a>
+        </div>
+
         {activeTab === "news" && (
           <HourlyNewsFeed
             news={news}
